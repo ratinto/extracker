@@ -1,0 +1,94 @@
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: #403438;
+    height: 100vh;
+    padding-top: 20px;
+}
+
+.sidebar .nav-link {
+    color: #FFCE56;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: #007bff;
+}
+
+/* Main Content Styles */
+.main-content {
+    padding-top: 30px;
+}
+
+.card {
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 30px;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0;
+    background-color: #ff00cc;
+}
+
+.card-header h3,
+.card-header h4 {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.card-body {
+    background-color: #fff;
+    padding: 30px;
+}
+
+form input,
+form select {
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Doughnut Chart */
+canvas {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    width: 100% !important;
+    height: 300px !important;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
