@@ -1,1 +1,398 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f4f7fc;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card-header {
+            background-color: #d7d007;
+            color: white;
+            text-align: center;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .expense-form {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .expense-list {
+            margin-top: 30px;
+            color: #000;
+        }
+
+        .expense-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0px 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 15px;
+            padding: 15px;
+            margin: 25px;
+        }
+
+        .expense-card .category {
+            font-size: 14px;
+            color: #6c757d;
+            
+        }
+
+        .expense-card .amount {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .expense-card .expense {
+            color: #dc3545; /* Red for Expense */
+        }
+
+        .expense-card .saving {
+            color: #28a745; /* Green for Saving */
+        }
+
+        .expense-card .investment {
+            color: #007bff; /* Blue for Investment */
+            
+        }
+
+        button {
+            font-size: 16px;
+        }
+
+        .navbar {
+            background-color: #266744;
+        }
+
+        .navbar-brand {
+            color: rgb(178, 34, 34);
+        }
+
+        .navbar-brand:hover {
+            color: #f4f7fc;
+        }
+
+        .btn-submit {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .expense-total {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .exp{
+            color: #FF6384;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .sav{
+            color:#28a745;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .inv{
+            color: #007bff;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        #expenseChart {
+            width: 30%; /* Reduce the width */
+            height: 30%; /* Adjust the height */
+            margin: 10px auto;
+        }
+
+        .history{
+            background-color: #ffffff;
+            color: rgb(0, 0, 0);
+            text-align: center;
+            font-size: 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 0px 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Expense Tracker</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- Form to add new expense -->
+        <div class="card expense-form">
+            <div class="card-header">
+                <h4>Add New Expense</h4>
+            </div>
+            <div class="card-body">
+                <form id="expense-form">
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="description" name="description" placeholder="House-Rent Stock Market Shopping Sallary">
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="amount" name="amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select id="category" name="category" class="form-select" required>
+                            <option value="expense">Expense</option>
+                            <option value="saving">Saving</option>
+                            <option value="investment">Investment</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-submit w-100">Add Expense</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Displaying totals -->
+        <div class="card mt-4">
+            <div class="card-body d-flex justify-content-between">
+                <div>
+                    <h5>Expense: <span id="total-expense" class="exp">₹0</span></h5>
+                </div>
+                <div>
+                    <h5>Saving: <span id="total-saving" class="sav">₹0</span></h5>
+                </div>
+                <div>
+                    <h5>Investment: <span id="total-investment" class="inv">₹0</span></h5>
+                </div>
+                <!-- <div>
+                    <h5>Total: <span id="total-overall" class="expense-total">₹0</span></h5>
+                </div>
+            </div> -->
+        </div>
+
+        <!-- Display Chart -->
+        <div class="card chart-container" style="height: auto; width: auto;">
+            <div class="card-header">
+                <h4>Expenses Overview</h4>
+            </div>
+            <div class="card-body">
+                <canvas id="expenseChart"></canvas>
+            </div>
+        </div>
+        
+        
+
+    </div>
+
+    
+    <div class="history">
+        <p>History</p>
+
+        <!-- List of expenses -->
+    <div class="expense-list" id="expense-list">
+        
+        <!-- Expenses will appear here -->
+    </div>
+    </div>
+    
+
+    <!-- Bootstrap JS (and dependencies) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        let expenseChart;
+
+        // Handle Form Submission
+        $('#expense-form').submit(function (e) {
+            e.preventDefault();
+
+            const expenseData = {
+                description: $('#description').val(),
+                amount: parseFloat($('#amount').val()),
+                category: $('#category').val(),
+            };
+
+            $.ajax({
+                url: 'http://localhost:3000/api/expenses',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(expenseData),
+                success: function(response) {
+                    alert(response.message);
+                    loadExpenses();
+                    $('#expense-form')[0].reset();
+                },
+                error: function(error) {
+                    alert('Error: ' + error.responseText);
+                }
+            });
+        });
+
+        // Load Expenses
+        function loadExpenses() {
+            $.get('http://localhost:3000/api/expenses', function (data) {
+                renderExpenseList(data);
+                updateTotalExpense(data);
+                renderChart(data);
+            });
+        }
+
+        // Render Expenses in List
+        function renderExpenseList(data) {
+            const expenseList = $('#expense-list');
+            expenseList.empty();
+
+            if (data.length === 0) {
+                expenseList.append('<p>No expenses to display.</p>');
+            } else {
+                data.forEach(function (expense) {
+                    let amountClass = '';
+
+                    // Set class based on category
+                    if (expense.category === 'expense') {
+                        amountClass = 'expense';
+                    } else if (expense.category === 'saving') {
+                        amountClass = 'saving';
+                    } else if (expense.category === 'investment') {
+                        amountClass = 'investment';
+                    }
+
+                    expenseList.append(`
+                        <div class="expense-card">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p><strong>${expense.description}</strong></p>
+                                    <p class="category">${expense.category}</p>
+                                </div>
+                                <div>
+                                    <p class="amount ${amountClass}">₹${expense.amount}</p>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteExpense('${expense._id}')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+            }
+        }
+
+        // Update Totals
+        function updateTotalExpense(data) {
+            let totalExpense = 0, totalSaving = 0, totalInvestment = 0;
+
+            data.forEach(expense => {
+                if (expense.category === 'expense') {
+                    totalExpense += expense.amount;
+                } else if (expense.category === 'saving') {
+                    totalSaving += expense.amount;
+                } else if (expense.category === 'investment') {
+                    totalInvestment += expense.amount;
+                }
+            });
+
+            $('#total-expense').text('₹ -' + totalExpense);
+            $('#total-saving').text('₹ +' + totalSaving);
+            $('#total-investment').text('₹ +' + totalInvestment);
+            // $('#total-overall').text('₹' + (totalExpense + totalSaving + totalInvestment));
+        }
+
+        // Render Chart
+        function renderChart(data) {
+            let categories = { expense: 0, saving: 0, investment: 0 };
+
+            data.forEach(expense => {
+                if (expense.category === 'expense') {
+                    categories.expense += expense.amount;
+                } else if (expense.category === 'saving') {
+                    categories.saving += expense.amount;
+                } else if (expense.category === 'investment') {
+                    categories.investment += expense.amount;
+                }
+            });
+
+            const chartData = {
+                labels: ['Expense', 'Saving', 'Investment'],
+                datasets: [{
+                    data: [categories.expense, categories.saving, categories.investment],
+                    backgroundColor: ['#FF6384', '#28a745', '#007bff']
+                }]
+            };
+
+            if (expenseChart) expenseChart.destroy();
+
+            expenseChart = new Chart($('#expenseChart'), {
+                type: 'doughnut',
+                data: chartData
+            });
+        }
+
+        // Delete Expense
+        function deleteExpense(id) {
+            $.ajax({
+                url: `http://localhost:3000/api/expenses/${id}`,
+                type: 'DELETE',
+                success: function(response) {
+                    alert(response.message);
+                    loadExpenses();
+                },
+                error: function(error) {
+                    alert('Error: ' + error.responseText);
+                }
+            });
+        }
+
+        // Initial Load
+        loadExpenses();
+    </script>
+
+</body>
+</html>
